@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    container_name: d6_web
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - d6_network
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: d6_php
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - d6_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: d6_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: d6_db
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - d6_network
+
+networks:
+  d6_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
