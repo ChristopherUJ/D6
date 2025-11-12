@@ -3,7 +3,7 @@
 
 class Database
 {
-    private $host = 'mysql';
+    private $host = 'localhost';
     private $dbname = 'd6_db';
     private $username = 'user';
     private $password = 'password';
